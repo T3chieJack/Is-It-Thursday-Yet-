@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Is It Thursday Yet?</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            min-height: 100vh;
+            margin: 0;
+            background: linear-gradient(45deg, #ff9a9e, #fad0c4, #fbc2eb);
+            background-size: 300% 300%;
+            animation: gradientBG 5s infinite;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 3em;
+            margin: 0.5em 0;
+        }
+
+        #countdown {
+            font-size: 1.5em;
+            color: #333;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.8);
+            top: -10px;
+            animation: fall 3s linear infinite;
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translateY(-100px) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1 id="question">Is it Thursday yet?</h1>
+    <div id="answer"></div>
+    <div id="countdown"></div>
+
+    <script>
+        function updateThursdayStatus() {
+            const now = new Date();
+            const isThursday = now.getDay() === 4; // Thursday is 4 in JavaScript's Date object
+            const answer = document.getElementById("answer");
+            const countdown = document.getElementById("countdown");
+
+            answer.textContent = isThursday ? "Yes. 🎉" : "No. 😞";
+
+            if (!isThursday) {
+                const nextThursday = new Date();
+                nextThursday.setDate(now.getDate() + ((4 - now.getDay() + 7) % 7 || 7));
+                nextThursday.setHours(0, 0, 0, 0);
+                const timeDiff = nextThursday - now;
+
+                const hours = Math.floor(timeDiff / (1000 * 60 * 60));
+                const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
+
+                countdown.textContent = `Next Thursday in ${hours}h ${minutes}m ${seconds}s`;
+            } else {
+                countdown.textContent = "Enjoy your Thursday! 🎊";
+                createConfetti();
+            }
+        }
+
+        function createConfetti() {
+            for (let i = 0; i < 100; i++) {
+                const confetti = document.createElement("div");
+                confetti.classList.add("confetti");
+                confetti.style.left = Math.random() * 100 + "vw";
+                confetti.style.animationDelay = Math.random() * 3 + "s";
+                confetti.style.backgroundColor = `hsl(${Math.random() * 360}, 70%, 70%)`;
+                document.body.appendChild(confetti);
+
+                setTimeout(() => confetti.remove(), 3000);
+            }
+        }
+
+        setInterval(updateThursdayStatus, 1000);
+        updateThursdayStatus();
+    </script>
+</body>
+</html>
